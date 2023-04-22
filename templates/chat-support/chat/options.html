@@ -1,0 +1,80 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Register</title>
+    <link rel="icon" type="image/x-icon" href="{% static 'assets/images/logo.svg' %}">
+    <script>
+        window.location.replace("{% if is_room_exist %}{% url 'chat_with_human' human_chat_room.slug %}{% else %}{% url 'create_human_chat_room' %}{% endif %}")
+        {% comment %} window.location.replace("{% url 'chat_with_ai' %}") {% endcomment %}
+    </script>
+    <link href="{% static 'chat-support/css/bootstrap.min.css' %}" rel="stylesheet">
+    <link href="{% static 'chat-support/css/style.css' %}" rel="stylesheet">
+</head>
+<body>
+    <div class="chat-option">
+        <div class="chat-option-in">
+            <h3>Chat Support With</h3>
+            {% comment %} <div class="row my-5"> {% endcomment %}
+                {% comment %}{% url 'chat_with_ai' %}{% endcomment %}
+                {% comment %} <div class="col-md-6" data-chat-option="{% url 'coming_soon' %}">
+                    <div class="chat-option-box">
+                        <div class="option-image">
+                            <img src="https://cdn-icons-png.flaticon.com/512/3329/3329909.png">
+                        </div>
+                        <div class="text-center my-2">
+                            <h4>Artificial Intellegency</h4>
+                        </div>
+                    </div>
+                </div> {% endcomment %}
+                {% comment %} <div class="col-md-12" data-chat-option="{% if is_room_exist %}{% url 'chat_with_human' human_chat_room.slug %}{% else %}{% url 'create_human_chat_room' %}{% endif %}">
+                    <div class="chat-option-box">
+                        <div class="option-image">
+                            <img src="https://cdn-icons-png.flaticon.com/512/2891/2891353.png">
+                        </div>
+                        <div class="text-center my-2">
+                            <h4>Human</h4>
+                        </div>
+                    </div>
+                </div>
+            </div> {% endcomment %}
+            <div class="d-flex justify-content-center my-5">
+                {% comment %}{% url 'chat_with_ai' %}{% endcomment %}
+                {% comment %} <div class="col-md-6" data-chat-option="{% url 'coming_soon' %}">
+                    <div class="chat-option-box">
+                        <div class="option-image">
+                            <img src="https://cdn-icons-png.flaticon.com/512/3329/3329909.png">
+                        </div>
+                        <div class="text-center my-2">
+                            <h4>Artificial Intellegency</h4>
+                        </div>
+                    </div>
+                </div> {% endcomment %}
+                <div class="col-md-6" data-chat-option="{% if is_room_exist %}{% url 'chat_with_human' human_chat_room.slug %}{% else %}{% url 'create_human_chat_room' %}{% endif %}">
+                    <div class="chat-option-box">
+                        <div class="option-image">
+                            <img src="https://cdn-icons-png.flaticon.com/512/2891/2891353.png">
+                        </div>
+                        <div class="text-center my-2">
+                            <h4>Human</h4>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <script>
+        document.querySelectorAll('[data-chat-option]').forEach(
+            el => el.addEventListener('click', function(event) {
+                    const URL = this.getAttribute("data-chat-option")
+                    window.location.href = URL
+                }
+            )
+        )
+    </script>
+</body>
+</html>

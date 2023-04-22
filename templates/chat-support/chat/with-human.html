@@ -1,0 +1,243 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Chat With Human</title>
+    <link rel="icon" type="image/x-icon" href="{% static 'assets/images/logo.svg' %}">
+    <link rel="stylesheet" href="{% static 'chat-support/css/bootstrap.min.css' %}">
+    <link href="{% static 'chat-support/css/style.css' %}" rel="stylesheet">
+</head>
+
+<body>
+    <div class="container">
+        <div class="main-section">
+            <div class="main-section-wrap">
+                <div class="chat-main-sec">
+                    <div class="chat-head" style="text-align: center;">
+                        {% if request.user.is_staff %}
+                        <a href="{% url 'question_and_answer_list' %}" class="btn btn-warning" style="float: left; background-color: #f78e42;">Questions and Answers</a>
+                        {% endif %}
+                        <h3 class="heading" style="display: inline;">Chatting With Human</h3>
+                        <a href="{% url 'chat_support_logout' %}" class="btn btn-warning"
+                            style="float: right; background-color: #f78e42;">Logout</a>
+                    </div>
+                    <div class="chat-main-sec-inner">
+                        {% if request.user.is_staff %}
+                        <div class="chat-sidebar-l">
+                            <ul class="user-chat-list">
+                                {% for data in all_chat_room %}
+                                <li class="{% if data.reply_to_customer_url == request.path %}active-user {% endif %}chat-with-user"
+                                    data-href="{% if data.support_user %}{{ data.reply_to_customer_url }}{% else %}{{ data.set_admin_to_room_url }}{% endif %}">
+                                    <figure>{{ data.query_user.first_name|first|capfirst }}</figure>
+                                    <figcaption>
+                                        <h3>{{ data.query_user.first_name }}</h3>
+                                    </figcaption>
+                                </li>
+                                {% endfor %}
+                                <!-- <li>
+                                    <figure><img src="{% static 'chat-support/images/chat (copy).png' %}"></figure>
+                                    <figcaption>
+                                        <h3>shgdh</h3>
+                                        
+                                    </figcaption>
+                                </li> -->
+                            </ul>
+                        </div>
+                        {% endif %}
+                        <div class="chatbar-r {% if not request.user.is_staff %}ps-0{% endif %}">
+                            <div class="chat-section">
+                                {% for data in chat_data %}
+                                {% if request.user.id == data.sender_id %}
+                                <div class="chat-detail sender-chat-detail">
+                                    <div class="sender-section message-section">
+                                        <div class="message-section-in">
+                                            <div class="chat-box">
+                                                <div class="chat-box-in">
+                                                    <p class="chat-message">{{ data.message }}</p>
+                                                </div>
+                                                <div class="time-info">
+                                                    <span>{{ data.created_at|date:'d M Y' }}</span>
+                                                    <span>{{ data.created_at|date:'h:i' }}</span>
+                                                </div>
+                                            </div>
+                                            <div class="person-name">
+                                                {{ data.sender.first_name|first }}
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                {% else %}
+                                <div class="chat-detail sender-chat-detail">
+                                    <div class="reciever-section message-section">
+                                        <div class="message-section-in">
+                                            <div class="person-name">
+                                                {{ data.sender.first_name|first }}
+                                            </div>
+                                            <div class="chat-box">
+                                                <div class="chat-box-in">
+                                                    <p class="chat-message">{{ data.message }}</p>
+                                                </div>
+                                                <div class="time-info">
+                                                    <span>{{ data.created_at|date:'d M Y' }}</span>
+                                                    <span>{{ data.created_at|date:'h:i' }}</span>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                {% endif %}
+                                {% endfor %}
+                            </div>
+                            {% if not request.user.is_staff %}
+                            <style>
+                                .question-section {
+                                    border: 1px solid black;
+                                    text-align: center;
+                                    cursor: pointer;
+                                }
+
+                                .question-section p {
+                                    margin-bottom: 0px;
+                                    margin: 10px 0px;
+                                }
+                            </style>
+                            <div class="suggested-question-section d-flex">
+                                {% for question_and_answer in questions_and_answers %}
+                                <div class=" question-section " data-question="{{ question_and_answer.question }}" data-answer="{{ question_and_answer.answer }}">
+                                    <p>{{ question_and_answer.question }}</p>
+                                </div>
+                                {% endfor %}
+                            </div>
+                            {% endif %}
+                            <div class="input-message-section">
+                                <form method="POST" action="">
+                                    {% csrf_token %}
+                                    <textarea name="user_input" id="user-input"></textarea>
+                                    <button type="button" id="send-btn" class="btn btn-primary">Send Msg</button>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="{% static 'chat-support/js/bootstrap.bundle.min.js' %}"></script>
+    <script>
+
+        const users = document.querySelectorAll('.chat-with-user')
+        users.forEach(element => {
+            element.addEventListener('click', function () {
+                const url = this.getAttribute('data-href')
+                window.location.replace(url)
+            })
+        });
+
+        const ws_scheme = window.location.protocol == "https:" ? 'wss' : 'ws'
+        const chatSocket = new WebSocket(
+            ws_scheme + '://' + window.location.host + '/ws/chat/{{ chat_room.id }}/'
+        );
+
+        document.getElementById('send-btn').disabled = true
+        document.getElementById('user-input').addEventListener('input', function () {
+            document.getElementById('send-btn').disabled = !this.value
+        })
+
+        document.getElementById('send-btn').addEventListener('click', function () {
+            const userInput = document.getElementById('user-input')
+            if (userInput.value) {
+                chatSocket.send(JSON.stringify({
+                    'message': userInput.value,
+                    'sender': "{{ request.user.id }}",
+                    'receiver': "{% if chat_room.support_user_id == request.user.id %}{{ chat_room.query_user_id }}{% else %}{{ chat_room.support_user_id }}{% endif %}"
+                }))
+                userInput.value = '';
+            }
+        })
+
+        function goToBottom() {
+            const element = document.querySelector('.chat-section');
+            element.scrollTop = element.scrollHeight;
+        }
+        goToBottom()
+
+        chatSocket.onmessage = function (e) {
+            const data = JSON.parse(e.data);
+            const dt = new Date()
+            const month_name = dt.toLocaleString('default', { month: 'short' })
+            const date = `${dt.getDate()} ${month_name} ${dt.getFullYear()}`
+            const time = `${dt.getHours()}: ${dt.getMinutes()}`
+            const userName = (data.sender === "{{ chat_room.query_user_id }}" ? "{{ chat_room.query_user.first_name }}" : "{{ chat_room.support_user.first_name }}")
+            const html_data = (("{{ request.user.id }}" === data.sender) ?
+                `<div class="chat-detail sender-chat-detail">
+                                <div class="sender-section message-section">
+                                    <div class="message-section-in">
+                                        <div class="chat-box">
+                                            <div class="chat-box-in">
+                                                <p class="chat-message">${data.message}</p>
+                                            </div>
+                                            <div class="time-info">
+                                                <span>${date}</span>
+                                                <span>${time}</span>
+                                            </div>
+                                        </div>
+                                        <div class="person-name">
+                                            {{ request.user.first_name|first }}
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>`
+                :
+                `<div class="chat-detail sender-chat-detail">
+                                <div class="reciever-section message-section">
+                                    <div class="message-section-in">
+                                        <div class="person-name">
+                                            ${userName.charAt(0)}
+                                        </div>
+                                        <div class="chat-box">
+                                            <div class="chat-box-in">
+                                                <p class="chat-message">${data.message}</p>
+                                            </div>
+                                            <div class="time-info">
+                                                <span>${date}</span>
+                                                <span>${time}</span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>`)
+            document.querySelector('.chat-section').insertAdjacentHTML('beforeend', html_data)
+            // console.log(element)
+            goToBottom()
+
+        }
+
+        {% if not request.user.is_staff %}
+        document.querySelectorAll('.question-section').forEach(element => {
+            element.addEventListener('click', function () {
+                const question = this.getAttribute('data-question')
+                const answer = this.getAttribute('data-answer')
+
+                chatSocket.send(JSON.stringify({
+                    'message': question,
+                    'sender': "{{ chat_room.query_user_id }}",
+                    'receiver': "{{ chat_room.support_user_id }}"
+                }))
+
+                chatSocket.send(JSON.stringify({
+                    'message': answer,
+                    'sender': "{{ chat_room.support_user_id }}",
+                    'receiver': "{{ chat_room.query_user_id }}"
+                }))
+            })
+        });
+        {% endif %}
+    </script>
+</body>
+
+</html>

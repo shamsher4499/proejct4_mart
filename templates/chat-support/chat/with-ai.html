@@ -1,0 +1,97 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Chat With AI</title>
+    <link rel="icon" type="image/x-icon" href="{% static 'assets/images/logo.svg' %}">
+    <link rel="stylesheet" href="{% static 'chat-support/css/bootstrap.min.css' %}">
+    <link href="{% static 'chat-support/css/style.css' %}" rel="stylesheet">
+</head>
+<body>
+    <div class="container">
+        <div class="main-section">
+            <div class="main-section-wrap">
+                <div class="chat-main-sec">
+                    <div class="chat-head" style="text-align: center;">
+                        {% comment %} {% if request.user.is_staff %}
+                        <a href="{% url 'question_and_answer_list' %}" class="btn btn-warning" style="float: left; background-color: #f78e42;">Questions and Answers</a>
+                        {% endif %} {% endcomment %}
+                        <h3 class="heading" style="display: inline;">Chatting With AI</h3>
+                        <a href="{% url 'chat_support_logout' %}" class="btn btn-warning"
+                            style="float: right; background-color: #f78e42;">Logout</a>
+                    </div>
+
+
+                    <div class="chat-main-sec-inner">
+                        <div class="chatbar-r ps-0">
+                            <div class="chat-section">
+                                {% for data in chat_data %}
+                                <div class="chat-detail sender-chat-detail">
+                                    <div class="sender-section message-section">
+                                        <div class="message-section-in">
+                                            <div class="chat-box">
+                                                <div class="chat-box-in">
+                                                    <p class="chat-message">{{ data.user_input }}</p>
+                                                </div>
+                                                <div class="time-info">
+                                                    <span>{{ data.created_at|date:'d M Y' }}</span>
+                                                    <span>{{ data.created_at|date:'h:i' }}</span>
+                                                </div>
+                                            </div>
+                                            <div class="person-name">You</div>
+                                        </div>
+                                    </div>
+                                </div>
+                    
+                                <div class="chat-detail ai-chat-detail">
+                                    <div class="ai-section message-section">
+                                        <div class="message-section-in">
+                                            <div class="person-name">AI</div>
+                                            <div class="chat-box">
+                                                <div class="chat-box-in">
+                                                    <p class="chat-message">{{ data.ai_response }}</p>
+                                                </div>
+                                                <div class="time-info">
+                                                    <span>{{ data.created_at|date:'d M Y' }}</span>
+                                                    <span>{{ data.created_at|date:'h:i' }}</span>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                {% endfor %}
+                            </div>
+                            <div class="input-message-section">
+                                <form method="POST" action="">
+                                    {% csrf_token %}
+                                    <textarea name="user_input" id="user-input"></textarea>
+                                    <button type="button" id="send-btn" class="btn btn-primary">Send Msg</button>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <script src="{% static 'chat-support/js/bootstrap.bundle.min.js' %}"></script>
+    <script>
+        document.getElementById('send-btn').addEventListener('click', function() {
+            const inputSection = document.querySelector('.input-message-section')
+            const element = `<div class="text-center"><h4>Loading...</h4></div>`
+            inputSection.firstElementChild.submit()
+            inputSection.firstElementChild.remove()
+            inputSection.innerHTML = element
+        })
+
+        function goToBottom() {
+            const element = document.querySelector('.chat-section');
+            element.scrollTop = element.scrollHeight;
+        }
+        goToBottom()
+    </script>
+</body>
+</html>

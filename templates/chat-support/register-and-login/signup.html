@@ -1,0 +1,149 @@
+{% load static %}
+<html>
+  <head>
+    <meta charset="utf-8">
+    <title>:: Signup ::</title>
+    <!--responsive-meta-here-->
+    <meta name="viewport" content="minimum-scale=1.0, maximum-scale=1.0,width=device-width, user-scalable=no">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <!--responsive-meta-end-->
+    <link rel="icon" type="image/x-icon" href="{% static 'assets/images/logo.svg' %}">
+    <link href="{% static 'assets/css/bootstrap.min.css' %}" rel="stylesheet" />
+    <link rel="stylesheet" href="https://pro.fontawesome.com/releases/v5.10.0/css/all.css">
+    <link href="{% static 'assets/css/fontawesome-all.min.css' %}" rel="stylesheet"/>
+    <link rel="stylesheet" href="{% static 'assets/css/owl.carousel.min.css' %}" rel="stylesheet"/>
+    <link rel="stylesheet" href="{% static 'assets/fonts/remixicon.css' %}" rel="stylesheet"/>
+    <link rel="stylesheet" href="{% static 'assets/css/fontawesome-all.css' %}" rel="stylesheet"/>
+    <link rel="stylesheet" href="{% static 'assets/css/fontawesome.css' %}" rel="stylesheet"/>
+    <link rel="stylesheet" href="{% static 'assets/css/style.css' %}" rel="stylesheet"/>
+    <link rel="stylesheet" href="{% static 'toastify/toastify.css' %}" rel="stylesheet"/>
+    <script src="{% static 'toastify/toastify.js' %}"></script>
+    <script src="{% static 'toastify/my-toast.js' %}"></script>
+    <!-- <link rel="stylesheet" href="css/responsive.css" rel="stylesheet"/> -->
+  </head>
+  <body class="inner-pages">
+    {% for message in messages %}
+    <script>
+        myToast("{{ message }}", "{{ message.tags }}", destination='')
+    </script> 
+    {% endfor %}
+    <div class="login-wrap-main">
+      <div class="login-box card-shadow signup-form">
+        <div class="logo-login">
+          <a href="javascript:;">
+            <img src="{% static 'assets/images/logo.svg' %}">
+          </a>
+        </div>
+        <div class="login-head text-center">
+          <h4>Create an account</h4>
+          <p>Setup a new account in a minute.</p>
+        </div>
+        <div class="form-box">
+          <form method="POST" class="needs-validation" novalidate>
+            {% csrf_token %}
+              <div class="row">
+                <div class="col-md-6">
+                  <div class="form-group">
+                    <label for="login-first-name" class="form-label">First name</label>
+                    <div class="input-group has-validation">
+                      <span class="input-group-text" id="inputGroupPrepend">
+                        <i data-feather="user"></i>
+                      </span>
+                      <input type="text" name="first_name" class="form-control" id="login-first-name" aria-describedby="inputGroupPrepend" required placeholder="Please enter first name">
+                      <div class="invalid-feedback">
+                        Please enter first name.
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                <div class="col-md-6">
+                  <div class="form-group">
+                    <label for="login-last-name" class="form-label">Last name</label>
+                    <div class="input-group has-validation">
+                      <span class="input-group-text" id="inputGroupPrepend">
+                        <i data-feather="user"></i>
+                      </span>
+                      <input type="text" name="last_name" class="form-control" id="login-last-name" aria-describedby="inputGroupPrepend" required placeholder="Please enter last name">
+                      <div class="invalid-feedback">
+                        Please enter last name.
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                <div class="col-md-6">
+                  <div class="form-group">
+                    <label for="login-user-name" class="form-label">User name</label>
+                    <div class="input-group has-validation">
+                      <span class="input-group-text" id="inputGroupPrepend">
+                        <i data-feather="user"></i>
+                      </span>
+                      <input type="text" name="username" class="form-control" id="login-user-name" aria-describedby="inputGroupPrepend" required placeholder="Please enter user name">
+                      <div class="invalid-feedback">
+                        Please enter right user name.
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                <div class="col-md-6">
+                  <div class="form-group">
+                    <label for="login-email" class="form-label">Email address</label>
+                    <div class="input-group has-validation">
+                      <span class="input-group-text" id="inputGroupPrepend">
+                        <i data-feather="mail"></i>
+                      </span>
+                      <input type="email" name="email" class="form-control" id="login-email" aria-describedby="inputGroupPrepend" required placeholder="Please enter email address">
+                      <div class="invalid-feedback">
+                        Please enter right email address.
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                <div class="col-md-12">
+                  <div class="form-group">
+                    <label for="login-password" class="form-label">Password</label>
+                    <div class="input-group has-validation">
+                      <span class="input-group-text" id="inputGroupPrepend">
+                        <i data-feather="mail"></i>
+                      </span>
+                      <input type="password" name="password" class="form-control" id="login-password" aria-describedby="inputGroupPrepend" required placeholder="Please password">
+                      <div class="invalid-feedback">
+                        Please enter password.
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              
+              {% comment %} <div class="forgot-pass d-flex mb-3">
+                <div class="form-check">
+                  <input class="form-check-input" type="checkbox" value="" id="flexCheckDefault">
+                  <label class="form-check-label" for="flexCheckDefault">
+                    Subscribe to our newsletter 
+                  </label>
+                </div>
+              </div> {% endcomment %}
+              <div class="form-group button-login">
+                <button class="btn btn-primary w-100" type="submit">
+                  Signup
+                  <span><i data-feather="arrow-right"></i></span>
+                </button>
+              </div>
+              
+              <div class="new-user-text">
+                <p>Already a user?  <a href="{% url 'chat_support_login' %}">Login</a> </p>
+              </div>
+          </form>
+        </div>
+      </div>
+    </div>
+
+    <!-- -----java script------ -->
+    <script type="text/javascript" src="{% static 'assets/js/jquery-3.3.1.min.js' %}"></script>
+    <script type="text/javascript" src="{% static 'assets/js/popper.min.js' %}"></script>
+    <script type="text/javascript" src="{% static 'assets/js/bootstrap.min.js' %}"></script>
+    <script type="text/javascript" src="{% static 'assets/js/owl.carousel.min.js' %}"></script>
+    <script type="text/javascript" src="https://unpkg.com/feather-icons@4.29.0/dist/feather.min.js"></script>
+    <script type="text/javascript" src="{% static 'assets/js/site.js' %}"></script>
+  </body>
+</html>

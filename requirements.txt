@@ -1,0 +1,7 @@
+Django==3.2
+uWSGI
+openai
+channels
+channels-redis
+websocket-client
+python-decouple==3.6

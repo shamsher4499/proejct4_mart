@@ -1,0 +1,83 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Register</title>
+    <link href="{% static 'chat-support/css/bootstrap.min.css' %}" rel="stylesheet">
+    <link href="{% static 'chat-support/css/style.css' %}" rel="stylesheet">
+</head>
+
+<body>
+    <!-- Section: Design Block -->
+    <section class="text-center text-lg-start">
+        <!-- Jumbotron -->
+        <div class="container" style="padding: 75px 132px;">
+            <div class="row g-0 align-items-center">
+                <div class="col-lg-6 mb-5 mb-lg-0">
+                    <div class="card cascading-right" style="
+                    background: hsla(0, 0%, 100%, 0.55);
+                    backdrop-filter: blur(30px);
+                    ">
+                        <div class="card-body p-5 shadow-5 text-center">
+                            <h2 class="fw-bold mb-5">Sign In</h2>
+                            <form method="POST" class="row">
+                                {% csrf_token %}
+                                <!-- Email input -->
+                                <div class="col-6 form-outline mb-4">
+                                    <input type="email" id="form3Example3" class="form-control" name="email" />
+                                    <label class="form-label" for="form3Example3">Email address</label>
+                                </div>
+
+                                <!-- Password input -->
+                                <div class="col-6 form-outline mb-4">
+                                    <input type="password" id="form3Example4" class="form-control" name="password" />
+                                    <label class="form-label" for="form3Example4">Password</label>
+                                </div>
+
+                                <!-- Submit button -->
+                                <button type="submit" class="btn btn-primary btn-block mb-4">
+                                    Login
+                                </button>
+
+                                <!-- Register buttons -->
+                                <div class="text-center">
+                                    <p>or sign up</p>
+                                    <a href="{% url 'chat_support_register' %}" class="btn btn-primary btn-floating mx-1 text-white">Sign Up</a>
+                                    {% comment %} <button type="button" class="btn btn-link btn-floating mx-1">
+                                        <i class="fab fa-facebook-f"></i>
+                                    </button>
+
+                                    <button type="button" class="btn btn-link btn-floating mx-1">
+                                        <i class="fab fa-google"></i>
+                                    </button>
+
+                                    <button type="button" class="btn btn-link btn-floating mx-1">
+                                        <i class="fab fa-twitter"></i>
+                                    </button>
+
+                                    <button type="button" class="btn btn-link btn-floating mx-1">
+                                        <i class="fab fa-github"></i>
+                                    </button> {% endcomment %}
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-lg-6 mb-5 mb-lg-0">
+                    <img src="https://images.unsplash.com/photo-1611536326696-b52be8ef45f6?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxzZWFyY2h8OHx8bGlxdW9yfGVufDB8fDB8fA%3D%3D&w=1000&q=80"
+                        class="w-100 rounded-4 shadow-4" alt="" />
+                </div>
+            </div>
+        </div>
+        <!-- Jumbotron -->
+    </section>
+    <!-- Section: Design Block -->
+    <script src="{% static 'chat-support/js/bootstrap.bundle.min.js' %}"></script>
+</body>
+
+</html>
